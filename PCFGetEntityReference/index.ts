@@ -2,10 +2,9 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 
 export class GetEntityReference
   implements ComponentFramework.StandardControl<IInputs, IOutputs> {
-  // Delcare properties that will be used by the control.
+  // Declare properties that will be used by the control.
   private _context: ComponentFramework.Context<IInputs>;
   private _container: HTMLDivElement;
-
   private _label: HTMLLabelElement;
 
   // Declare the variable that will store the entity reference used in the control.
@@ -37,38 +36,39 @@ export class GetEntityReference
     // Set the values for the control properties.
     this._context = context;
 
-    // Instantiate a new instance of the entityReference class
+    // Create HTML elements used.
+    this._container = document.createElement("div");
+    this._label = document.createElement("label");
+    this._label.setAttribute("id", "lblID");
+    this._container.appendChild(this._label);
+    container.appendChild(this._container);
+
+    // Setting default values.
     this._entityReference = {
       id: "",
       typeName: "",
       entityRecordName: "",
     };
-
-    this._container = document.createElement("div");
-
-    this._label = document.createElement("label");
-    this._label.setAttribute("id", "lblID");
-    this._container.appendChild(this._label);
-
-    container.appendChild(this._container);
   }
 
-  /**
-   * Called when any value in the property bag has changed. This includes field values, data-sets, global values such as container height and width, offline status, control metadata values such as label, visible, etc.
-   * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
-   */
   public updateView(context: ComponentFramework.Context<IInputs>): void {
-    // Add code to update control view
-
-    this._context = context;
+    /**
+     * Create a variable for the context.  NOTE: Not supported.
+     */
     let contextInfo = (<any>context).mode.contextInfo;
 
-    this._entityReference.id = contextInfo.entityId;
-    this._entityReference.typeName = contextInfo.typeName;
-    this._entityReference.entityRecordName = contextInfo.entityRecordName;
+    /**
+     * Update the entity reference property.  NOTE: not all entities require the "entityRecordName"
+     */
+    this._entityReference = {
+      id: contextInfo.entityId ? contextInfo.entityId : "",
+      typeName: contextInfo.typeName ? contextInfo.typeName : "",
+      entityRecordName: contextInfo.entityRecordName
+        ? contextInfo.entityRecordName
+        : "",
+    };
 
     console.log(this._entityReference);
-    this._label.innerHTML = this._entityReference.id;
   }
 
   /**
